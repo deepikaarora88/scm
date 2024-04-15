@@ -35,8 +35,8 @@ public class RequestSearchCriteria {
     private String mobileNumber;
 
     @SafeHtml
-    @JsonProperty("serviceRequestId")
-    private String serviceRequestId;
+    @JsonProperty("incidentId")
+    private String incidentId;
 
     @JsonProperty("sortBy")
     private SortBy sortBy;
@@ -83,7 +83,7 @@ public class RequestSearchCriteria {
     public enum SortBy {
         locality,
         applicationStatus,
-        serviceRequestId
+        incidentId
     }
 
     @SafeHtml
@@ -91,7 +91,7 @@ public class RequestSearchCriteria {
     private String accountId;
 
     public boolean isEmpty(){
-        return (this.tenantId==null && this.serviceCode==null && this.mobileNumber==null && this.serviceRequestId==null
+        return (this.tenantId==null && this.serviceCode==null && this.mobileNumber==null && this.incidentId==null
         && this.applicationStatus==null && this.ids==null && this.userIds==null && this.locality==null);
     }
 

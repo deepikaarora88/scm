@@ -76,7 +76,7 @@ const makeCommentsSubsidariesOfPreviousActions = async (wf) => {
 
 const getAssignerDetails = (instance, nextStep, moduleCode) => {
   let assigner = instance?.assigner
-  if (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE" || moduleCode === "PAY_LATER_SERVICE" || moduleCode === "FSM_ZERO_PAY_SERVICE") {
+  if (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE_V1"|| moduleCode === "PAY_LATER_SERVICE" || moduleCode === "FSM_ZERO_PAY_SERVICE") {
     if (instance.state.applicationStatus === "CREATED") {
       assigner = instance?.assigner
     } else {
@@ -110,11 +110,231 @@ export const WorkflowService = {
   },
 
   getDetailsById: async ({ tenantId, id, moduleCode, role, getTripData }) => {
-    const workflow = await Digit.WorkflowService.getByBusinessId(tenantId, id);
+    const workflow = 
+      {
+       
+          "ResponseInfo": null,
+          "ProcessInstances": [
+              {
+                  "id": "01e99665-2f41-4805-8f39-a0018733e06d",
+                  "tenantId": "pg.citya",
+                  "businessService": "IM",
+                  "businessId": "PG-IM-2024-03-29-002332",
+                  "action": "APPLY",
+                  "moduleName": "im-services",
+                  "state": {
+                      "auditDetails": null,
+                      "uuid": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                      "tenantId": "pg",
+                      "businessServiceId": "2317d56c-f1e4-426b-bb1d-fd819cdfc37d",
+                      "sla": 300000,
+                      "state": "PENDINGFORASSIGNMENT",
+                      "applicationStatus": "PENDINGFORASSIGNMENT",
+                      "docUploadRequired": false,
+                      "isStartState": false,
+                      "isTerminateState": false,
+                      "isStateUpdatable": null,
+                      "actions": [
+                          {
+                              "auditDetails": null,
+                              "uuid": "f922000e-b744-41f3-8086-7de42f983232",
+                              "tenantId": "pg",
+                              "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "action": "REJECT",
+                              "nextState": "12aeabba-7245-4acb-8dde-9ee64f6b3cb3",
+                              "roles": [
+                                  "GRO",
+                                  "DGRO"
+                              ],
+                              "active": null
+                          },
+                          {
+                              "auditDetails": null,
+                              "uuid": "8830aef4-7cab-42b9-8b37-9c8c9609942a",
+                              "tenantId": "pg",
+                              "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "action": "ASSIGNEDBYAUTOESCALATION",
+                              "nextState": "548abe23-c673-4e42-8851-4e5f9092f0a5",
+                              "roles": [
+                                  "AUTO_ESCALATE"
+                              ],
+                              "active": null
+                          },
+                          {
+                              "auditDetails": null,
+                              "uuid": "07fbef9d-e3d5-4ceb-9443-50e88ea98d35",
+                              "tenantId": "pg",
+                              "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "action": "ASSIGN",
+                              "nextState": "548abe23-c673-4e42-8851-4e5f9092f0a5",
+                              "roles": [
+                                  "GRO",
+                                  "DGRO"
+                              ],
+                              "active": null
+                          },
+                          {
+                              "auditDetails": null,
+                              "uuid": "15ba6655-0560-428f-8baa-4735bd79a0e6",
+                              "tenantId": "pg",
+                              "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "action": "COMMENT",
+                              "nextState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "roles": [
+                                  "CITIZEN"
+                              ],
+                              "active": null
+                          },
+                          {
+                              "auditDetails": null,
+                              "uuid": "90882c08-7887-4979-a69f-d189311d5f85",
+                              "tenantId": "pg.citya",
+                              "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "action": "EDIT",
+                              "nextState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                              "roles": [
+                                  "GRO",
+                                  "DGRO"
+                              ],
+                              "active": null
+                          }
+                      ]
+                  },
+                  "comment": null,
+                  "documents": null,
+                  "assigner": {
+                      "id": 9988,
+                      "userName": "PGRSU",
+                      "name": "PGR SU",
+                      "type": "EMPLOYEE",
+                      "mobileNumber": "9000000091",
+                      "emailId": null,
+                      "roles": [
+                          {
+                              "id": null,
+                              "name": "Employee",
+                              "code": "EMPLOYEE",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "Auto Escalation Employee",
+                              "code": "AUTO_ESCALATE",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "Auto Escalation Supervisor",
+                              "code": "SUPERVISOR",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "PGR Last Mile Employee",
+                              "code": "PGR_LME",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "Customer Support Representative",
+                              "code": "CSR",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "Grievance Routing Officer",
+                              "code": "GRO",
+                              "tenantId": "pg.citya"
+                          },
+                          {
+                              "id": null,
+                              "name": "Super User",
+                              "code": "SUPERUSER",
+                              "tenantId": "pg.citya"
+                          }
+                      ],
+                      "tenantId": "pg.citya",
+                      "uuid": "55fa55f0-5348-4eef-922c-2d36c50c56e1"
+                  },
+                  "assignes": null,
+                  "nextActions": [
+                      {
+                          "auditDetails": null,
+                          "uuid": "07fbef9d-e3d5-4ceb-9443-50e88ea98d35",
+                          "tenantId": "pg",
+                          "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                          "action": "ASSIGN",
+                          "nextState": "548abe23-c673-4e42-8851-4e5f9092f0a5",
+                          "roles": [
+                              "GRO",
+                              "DGRO"
+                          ],
+                          "active": null
+                      },
+                      {
+                          "auditDetails": null,
+                          "uuid": "8830aef4-7cab-42b9-8b37-9c8c9609942a",
+                          "tenantId": "pg",
+                          "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                          "action": "ASSIGNEDBYAUTOESCALATION",
+                          "nextState": "548abe23-c673-4e42-8851-4e5f9092f0a5",
+                          "roles": [
+                              "AUTO_ESCALATE"
+                          ],
+                          "active": null
+                      },
+                      {
+                          "auditDetails": null,
+                          "uuid": "90882c08-7887-4979-a69f-d189311d5f85",
+                          "tenantId": "pg.citya",
+                          "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                          "action": "EDIT",
+                          "nextState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                          "roles": [
+                              "GRO",
+                              "DGRO"
+                          ],
+                          "active": null
+                      },
+                      {
+                          "auditDetails": null,
+                          "uuid": "f922000e-b744-41f3-8086-7de42f983232",
+                          "tenantId": "pg",
+                          "currentState": "008ab0d5-5522-4d1e-a848-04cb2b1e3e46",
+                          "action": "REJECT",
+                          "nextState": "12aeabba-7245-4acb-8dde-9ee64f6b3cb3",
+                          "roles": [
+                              "GRO",
+                              "DGRO"
+                          ],
+                          "active": null
+                      }
+                  ],
+                  "stateSla": -260924304,
+                  "businesssServiceSla": 170775696,
+                  "previousStatus": null,
+                  "entity": null,
+                  "auditDetails": {
+                      "createdBy": "55fa55f0-5348-4eef-922c-2d36c50c56e1",
+                      "lastModifiedBy": "55fa55f0-5348-4eef-922c-2d36c50c56e1",
+                      "createdTime": 1711694776653,
+                      "lastModifiedTime": 1711694776653
+                  },
+                  "rating": 0,
+                  "escalated": false
+              }
+          ],
+          "totalCount": 0
+      }
+    
+   
+    console.log("workflow", workflow)
     const applicationProcessInstance = cloneDeep(workflow?.ProcessInstances);
     const getLocationDetails = window.location.href.includes("/obps/") || window.location.href.includes("noc/inbox");
-    const moduleCodeData = getLocationDetails ? applicationProcessInstance?.[0]?.businessService : moduleCode;
+    const moduleCodeData = "IM"
+    console.log("modulecode", moduleCodeData)
     const businessServiceResponse = (await Digit.WorkflowService.init(tenantId, moduleCodeData))?.BusinessServices[0]?.states;
+    console.log("busre", businessServiceResponse)
     if (workflow && workflow.ProcessInstances) {
       const processInstances = workflow.ProcessInstances;
       const nextStates = processInstances[0]?.nextActions.map((action) => ({ action: action?.action, nextState: processInstances[0]?.state.uuid }));
@@ -122,11 +342,10 @@ export const WorkflowService = {
         action: id.action,
         state: businessServiceResponse?.find((state) => state.uuid === id.nextState),
       }));
-
       /* To check state is updatable and provide edit option*/
       const currentState = businessServiceResponse?.find((state) => state.uuid === processInstances[0]?.state.uuid);
       if (currentState && currentState?.isStateUpdatable) {
-        if (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE" || moduleCode === "FSM_ZERO_PAY_SERVICE" || moduleCode === "PAY_LATER_SERVICE" || moduleCode === "FSM_VEHICLE_TRIP" || moduleCode === "PGR" || moduleCode === "OBPS") null;
+        if (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE" || moduleCode === "FSM_ADVANCE_PAY_SERVICE_V1" || moduleCode === "FSM_ZERO_PAY_SERVICE" || moduleCode === "PAY_LATER_SERVICE" || moduleCode === "FSM_VEHICLE_TRIP" || moduleCode === "IM" || moduleCode === "OBPS") null;
         else nextActions.push({ action: "EDIT", state: currentState });
       }
 
@@ -282,7 +501,7 @@ export const WorkflowService = {
           });
         }
 
-        if (timeline[timeline.length - 1].status !== "CREATED" && (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode==="FSM_ADVANCE_PAY_SERVICE" || moduleCode==="FSM_ZERO_PAY_SERVICE" || moduleCode==="PAY_LATER_SERVICE" ))
+        if (timeline[timeline.length - 1].status !== "CREATED" && (moduleCode === "FSM" || moduleCode === "FSM_POST_PAY_SERVICE" || moduleCode==="FSM_ADVANCE_PAY_SERVICE" || moduleCode==="FSM_ADVANCE_PAY_SERVICE_V1"|| moduleCode==="FSM_ZERO_PAY_SERVICE" || moduleCode==="PAY_LATER_SERVICE" ))
           timeline.push({
             status: "CREATED",
           });

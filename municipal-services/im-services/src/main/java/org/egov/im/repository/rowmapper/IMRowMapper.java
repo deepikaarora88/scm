@@ -3,6 +3,7 @@ package org.egov.im.repository.rowmapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.im.web.models.*;
+import org.egov.im.web.models.Priority;
 import org.egov.tracer.model.CustomException;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class IMRowMapper implements ResultSetExtractor<List<Service>> {
+public class IMRowMapper implements ResultSetExtractor<List<Incident>> {
 
 
     @Autowired
@@ -27,43 +28,56 @@ public class IMRowMapper implements ResultSetExtractor<List<Service>> {
 
 
 
-    public List<Service> extractData(ResultSet rs) throws SQLException, DataAccessException {
+    public List<Incident> extractData(ResultSet rs) throws SQLException, DataAccessException {
 
-        Map<String, Service> serviceMap = new LinkedHashMap<>();
+        Map<String, Incident> serviceMap = new LinkedHashMap<>();
 
         while (rs.next()) {
 
             String id = rs.getString("ser_id");
-            Service currentService = serviceMap.get(id);
+            Incident currentService = serviceMap.get(id);
             String tenantId = rs.getString("ser_tenantId");
-            Boolean active = rs.getBoolean("active");
 
             if(currentService == null){
 
                 id = rs.getString("ser_id");
                 String IncidentType = rs.getString("IncidentType");
-                String serviceRequestId = rs.getString("serviceRequestId");
+                String incidentid = rs.getString("incidentid");
                 String description = rs.getString("description");
-                String accountId = rs.getString("accountId");
                 String applicationStatus = rs.getString("applicationStatus");
                 String createdby = rs.getString("ser_createdby");
                 Long createdtime = rs.getLong("ser_createdtime");
                 String lastmodifiedby = rs.getString("ser_lastmodifiedby");
                 Long lastmodifiedtime = rs.getLong("ser_lastmodifiedtime");
+                String requestType = rs.getString("requestType");
+                String environment = rs.getString("environment");
+                String summary = rs.getString("summary");
+                String pendingreason = rs.getString("pendingreason");
+                String priority = rs.getString("priority");
+                String impact = rs.getString("impact");
+                String urgency = rs.getString("urgency");
+                String affectedServices = rs.getString("affectedServices");
                 Integer rating = rs.getInt("rating");
                 if(rs.wasNull()){rating = null;}
 
                 AuditDetails auditDetails = AuditDetails.builder().createdBy(createdby).createdTime(createdtime)
                                                 .lastModifiedBy(lastmodifiedby).lastModifiedTime(lastmodifiedtime).build();
 
-                currentService = Service.builder().id(id).active(active)
+                currentService = Incident.builder().id(id)
                         .incidentType(IncidentType)
-                        .serviceRequestId(serviceRequestId)
+                        .incidentId(incidentid)
                         .description(description)
-                        .accountId(accountId)
                         .applicationStatus(applicationStatus)
                         .tenantId(tenantId)
                         .rating(rating)
+                        .requestType(requestType)
+                        .environment(environment)
+                        .summary(summary)
+                        .pendingreason(pendingreason)
+                        .priority(Priority.fromValue(priority))
+                        .impact(impact)
+                        .urgency(urgency)
+                        .affectedServices(affectedServices)
                         .auditDetails(auditDetails)
                         .build();
 
@@ -84,9 +98,9 @@ public class IMRowMapper implements ResultSetExtractor<List<Service>> {
 
     }
 
-    private void addChildrenToProperty(ResultSet rs, Service service) throws SQLException {
+    private void addChildrenToProperty(ResultSet rs, Incident incident) throws SQLException {
 
-        if(service.getAddress() == null){
+        if(incident.getAddress() == null){
 
             Double latitude =  rs.getDouble("latitude");
             Double longitude = rs.getDouble("longitude");
@@ -117,7 +131,7 @@ public class IMRowMapper implements ResultSetExtractor<List<Service>> {
             if(additionalDetails != null)
                 address.setAdditionDetails(additionalDetails);
 
-            service.setAddress(address);
+            incident.setAddress(address);
 
         }
 

@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 Feature :: Citizen All service screen cards
 */
 export const processLinkData = (newData, code, t) => {
+  console.log("codeee", code)
   const obj = newData?.[`${code}`];
   if (obj) {
     obj.map((link) => {

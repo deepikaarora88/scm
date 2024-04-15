@@ -8,14 +8,14 @@ const Urls = {
     revenue_localities: `/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality`,
   },
 
-  pgr_search: `/pgr-services/v2/request/_search`,
-  pgr_update: `/pgr-services/v2/request/_update`,
+  im_search: `/im-services/v2/request/_search`,
+  im_update: `/im-services/v2/request/_update`,
   filter_data: `https://run.mocky.io/v3/597a50a0-90e5-4a45-b82e-8a2186b760bd`,
   FileStore: "/filestore/v1/files",
 
   FileFetch: "/filestore/v1/files/url",
-  PGR_Create: `/pgr-services/v2/request/_create`,
-  pgr_count: `/pgr-services/v2/request/_count`,
+  IM_Create: `/im-services/v2/request/_create`,
+  im_count: `/im-services/v2/request/_count`,
 
   OTP_Send: "/user-otp/v1/_send",
   Authenticate: "/user/oauth/token",
@@ -32,26 +32,7 @@ const Urls = {
 
   Shortener: "/egov-url-shortening/shortener",
 
-  fsm: {
-    search: "/fsm/v1/_search",
-    create: "/fsm/v1/_create",
-    update: "/fsm/v1/_update",
-    vendorSearch: "/vendor/v1/_search",
-    vehicleSearch: "/vehicle/v1/_search",
-    audit: "/fsm/v1/_audit",
-    vehicleTripSearch: "/vehicle/trip/v1/_search",
-    billingSlabSearch: "/fsm-calculator/v1/billingSlab/_search",
-    vehilceUpdate: "/vehicle/trip/v1/_update",
-    createVendor: "/vendor/v1/_create",
-    updateVendor: "/vendor/v1/_update",
-    createVehicle: "/vehicle/v1/_create",
-    updateVehicle: "/vehicle/v1/_update",
-    driverSearch: "/vendor/driver/v1/_search",
-    createDriver: "/vendor/driver/v1/_create",
-    updateDriver: "/vendor/driver/v1/_update",
-    vehicleTripCreate: "/vehicle/trip/v1/_create",
-    advanceBalanceCalculate: "/fsm-calculator/v1/_advancebalancecalculate",
-  },
+ 
 
   payment: {
     fetch_bill: "/billing-service/bill/v2/_fetchbill",
@@ -89,18 +70,7 @@ const Urls = {
     getCharts: "/dashboard-analytics/dashboard/getChartV2",
   },
 
-  mcollect: {
-    search: "/echallan-services/eChallan/v1/_search",
-    create: "/echallan-services/eChallan/v1/_create?",
-    fetch_bill: "/billing-service/bill/v2/_fetchbill?",
-    search_bill: "/egov-searcher/bill-genie/mcollectbills/_get",
-    search_bill_pt: "/egov-searcher/bill-genie/billswithaddranduser/_get",
-    update: "/echallan-services/eChallan/v1/_update",
-    download_pdf: "/egov-pdf/download/UC/mcollect-challan",
-    receipt_download: "/egov-pdf/download/PAYMENT/consolidatedreceipt",
-    bill_download: "/egov-pdf/download/BILL/consolidatedbill",
-    count: "/echallan-services/eChallan/v1/_count",
-  },
+  
   hrms: {
     search: "/egov-hrms/employees/_search",
     count: "/egov-hrms/employees/_count",

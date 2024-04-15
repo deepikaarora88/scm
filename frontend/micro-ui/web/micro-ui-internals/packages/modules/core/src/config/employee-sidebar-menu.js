@@ -159,7 +159,7 @@ const EmployeeSideBarMenu = (t, HRMS, FSM, PT, mCollect, DSS, RECEIPTS, TL, NOC,
   },
   PGR && {
     Icon: <ComplaintIcon />,
-    moduleName: t("ES_PGR_HEADER_COMPLAINT"),
+    moduleName: t("ES_PGR_HEADER_COMPLAINT1"),
   },
 ];
 export default EmployeeSideBarMenu;

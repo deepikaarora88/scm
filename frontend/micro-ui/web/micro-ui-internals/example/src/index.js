@@ -3,23 +3,23 @@ import ReactDOM from "react-dom";
 
 import { initLibraries } from "@egovernments/digit-ui-libraries";
 import { PGRReducers } from "@egovernments/digit-ui-module-pgr";
-import { PTModule, PTLinks, PTComponents } from "@egovernments/digit-ui-module-pt";
-import { MCollectModule, MCollectLinks } from "@egovernments/digit-ui-module-mcollect";
-// import { TLModule, TLLinks } from "@egovernments/digit-ui-module-tl";
-import { initFSMComponents } from "@egovernments/digit-ui-module-fsm";
+
+
+
+
 import { initPGRComponents } from "@egovernments/digit-ui-module-pgr";
-import { initDSSComponents } from "@egovernments/digit-ui-module-dss";
-import { initHRMSComponents } from "@egovernments/digit-ui-module-hrms";
+
+
 import { initReceiptsComponents, ReceiptsModule } from "@egovernments/digit-ui-module-receipts";
 // import { initReportsComponents } from "@egovernments/digit-ui-module-reports";
-import { initMCollectComponents } from "@egovernments/digit-ui-module-mcollect";
-import { initTLComponents } from "@egovernments/digit-ui-module-tl";
+
+
 import { PaymentModule, PaymentLinks, paymentConfigs } from "@egovernments/digit-ui-module-common";
-import { HRMSModule } from "@egovernments/digit-ui-module-hrms";
-import { initOBPSComponents } from "@egovernments/digit-ui-module-obps";
-import { initEngagementComponents } from "@egovernments/digit-ui-module-engagement";
-import { initNOCComponents } from "@egovernments/digit-ui-module-noc";
-import { initWSComponents } from "@egovernments/digit-ui-module-ws";
+
+
+
+
+
 import { DigitUI } from "@egovernments/digit-ui-module-core";
 import { initCommonPTComponents } from "@egovernments/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@egovernments/digit-ui-module-bills";
@@ -40,22 +40,14 @@ var Digit = window.Digit || {};
 
 const enabledModules = [
   "PGR",
-  "FSM",
+  
   "Payment",
   "PT",
   "QuickPayLinks",
-  "DSS",
-  "MCollect",
-  "HRMS",
-  "TL",
+  
   "Receipts",
   "Reports",
-  "OBPS",
-  "Engagement",
-  "NOC",
-  "WS",
-  "CommonPT",
-  "NDSS",
+  
   "Bills",
   "SW",
   "BillAmendment"
@@ -71,6 +63,8 @@ const initTokens = (stateCode) => {
   const citizenTenantId = window.localStorage.getItem("Citizen.tenant-id") || stateCode;
 
   const employeeInfo = window.localStorage.getItem("Employee.user-info");
+  console.log("empInfo", employeeInfo
+  )
   const employeeTenantId = window.localStorage.getItem("Employee.tenant-id");
 
   const userTypeInfo = userType === "CITIZEN" || userType === "QACT" ? "citizen" : "employee";
@@ -94,12 +88,8 @@ const initDigitUI = () => {
     PaymentModule,
     ...paymentConfigs,
     PaymentLinks,
-    PTModule,
-    PTLinks,
-    ...PTComponents,
-    MCollectLinks,
-    MCollectModule,
-    HRMSModule,
+   
+   
     ReceiptsModule,
     BillsModule,
 
@@ -107,18 +97,17 @@ const initDigitUI = () => {
     // TLLinks,
   });
 
-  initFSMComponents();
+ 
   initPGRComponents();
-  initDSSComponents();
-  initMCollectComponents();
-  initHRMSComponents();
-  initTLComponents();
+ 
+ 
+  
   initReceiptsComponents();
   // initReportsComponents();
-  initOBPSComponents();
-  initEngagementComponents();
-  initNOCComponents();
-  initWSComponents();
+  
+ 
+  
+  
   initCommonPTComponents();
   initBillsComponents();
 

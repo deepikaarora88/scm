@@ -188,20 +188,20 @@ public class MigrationService {
         }
 
         // Temporary for testing
-        List<org.egov.im.web.models.Service> services = new LinkedList<>();
+        List<org.egov.im.web.models.Incident> incidents = new LinkedList<>();
         List<ProcessInstance> workflowResponse = new LinkedList<>();
 
         for (Service serviceV1 : servicesV1) {
 
             String tenantId = serviceV1.getTenantId();
 
-            List<ActionInfo> actionInfos = idToActionMap.get(serviceV1.getServiceRequestId());
+            List<ActionInfo> actionInfos = idToActionMap.get(serviceV1.getIncidentid());
 
             Map<String, Long> actionUuidToSlaMap = getActionUUidToSLAMap(actionInfos, serviceV1.getIssueType());
 
             List<ProcessInstance> workflows = new LinkedList<>();
 
-            org.egov.im.web.models.Service service = transformService(serviceV1, idToUuidMap);
+            org.egov.im.web.models.Incident incident = transformService(serviceV1, idToUuidMap);
 
             actionInfos.forEach(actionInfo -> {
                 ProcessInstance workflow = transformAction(actionInfo, idToUuidMap, actionUuidToSlaMap);
@@ -209,22 +209,22 @@ public class MigrationService {
             });
 
 
-            service.setApplicationStatus(oldToNewStatus.get(serviceV1.getStatus().toString()));
+            incident.setApplicationStatus(oldToNewStatus.get(serviceV1.getStatus().toString()));
             ProcessInstanceRequest processInstanceRequest = ProcessInstanceRequest.builder().processInstances(workflows).build();
-            ServiceRequest serviceRequest = ServiceRequest.builder().service(service).build();
+            IncidentRequest incidentRequest = IncidentRequest.builder().incident(incident).build();
             //log.info("Pushing service request: " + serviceRequest);
             /*#################### TEMPORARY FOR TESTING, REMOVE THE COMMENTS*/
-               producer.push(tenantId,config.getBatchCreateTopic(),serviceRequest);
+               producer.push(tenantId,config.getBatchCreateTopic(),incidentRequest);
                producer.push(tenantId,config.getBatchWorkflowSaveTopic(),processInstanceRequest);
 
             // Temporary for testing
-            services.add(service);
+            incidents.add(incident);
             workflowResponse.addAll(workflows);
         }
 
         Map<String, Object> response = new HashMap<>();
 
-        response.put("Service:", services);
+        response.put("Service:", incidents);
         response.put("Workflows:", workflowResponse);
 
         return response;
@@ -233,11 +233,11 @@ public class MigrationService {
     }
 
 
-    private org.egov.im.web.models.Service transformService(Service serviceV1, Map<Long, String> idToUuidMap) {
+    private org.egov.im.web.models.Incident transformService(Service serviceV1, Map<Long, String> idToUuidMap) {
 
         String tenantId = serviceV1.getTenantId();
         String incidentType = serviceV1.getIssueType();
-        String serviceRequestId = serviceV1.getServiceRequestId();
+        String incidentId = serviceV1.getIncidentid();
         String description = serviceV1.getDescription();
         String rating = serviceV1.getRating();
 
@@ -291,13 +291,13 @@ public class MigrationService {
 
         // ACTIVE FLAG NEEDS TO BE ACCOUNTED FOR BELOW FOR POPULATING v2 POJO --->
 
-        org.egov.im.web.models.Service service = org.egov.im.web.models.Service.builder()
+        org.egov.im.web.models.Incident incident = org.egov.im.web.models.Incident.builder()
                 .id(UUID.randomUUID().toString())
                 .tenantId(tenantId)
                 .accountId(accountId)
                 .additionalDetail(attributes)
                 .incidentType(incidentType)
-                .serviceRequestId(serviceRequestId)
+                .incidentId(incidentId)
                 .description(description)
                 .address(address)
                 .active(active)
@@ -305,16 +305,16 @@ public class MigrationService {
                 .build();
 
         if(!CollectionUtils.isEmpty(additionalDetailMap))
-            service.setAdditionalDetail(additionalDetailMap);
+            incident.setAdditionalDetail(additionalDetailMap);
 
         if (org.apache.commons.lang3.StringUtils.isNumeric(rating)) {
-            service.setRating(Integer.parseInt(rating));
+        	incident.setRating(Integer.parseInt(rating));
         }
 
 
 
 
-        return service;
+        return incident;
 
     }
 

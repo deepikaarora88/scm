@@ -2,7 +2,7 @@ package org.egov.im.util;
 
 import org.egov.common.utils.MultiStateInstanceUtil;
 import org.egov.im.web.models.AuditDetails;
-import org.egov.im.web.models.Service;
+import org.egov.im.web.models.Incident;
 import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,13 +27,13 @@ public class IMUtils {
      * @param isCreate
      * @return AuditDetails
      */
-    public AuditDetails getAuditDetails(String by, Service service, Boolean isCreate) {
+    public AuditDetails getAuditDetails(String by, Incident incident, Boolean isCreate) {
         Long time = System.currentTimeMillis();
         if(isCreate)
             return AuditDetails.builder().createdBy(by).lastModifiedBy(by).createdTime(time).lastModifiedTime(time).build();
         else
-            return AuditDetails.builder().createdBy(service.getAuditDetails().getCreatedBy()).lastModifiedBy(by)
-                    .createdTime(service.getAuditDetails().getCreatedTime()).lastModifiedTime(time).build();
+            return AuditDetails.builder().createdBy(incident.getAuditDetails().getCreatedBy()).lastModifiedBy(by)
+                    .createdTime(incident.getAuditDetails().getCreatedTime()).lastModifiedTime(time).build();
     }
 
     /**

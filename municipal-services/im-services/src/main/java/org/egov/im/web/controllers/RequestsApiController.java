@@ -7,7 +7,12 @@ import org.egov.common.contract.response.ResponseInfo;
 import org.egov.im.service.IMService;
 import org.egov.im.util.IMConstants;
 import org.egov.im.util.ResponseInfoFactory;
-import org.egov.im.web.models.*;
+import org.egov.im.web.models.CountResponse;
+import org.egov.im.web.models.IncidentRequest;
+import org.egov.im.web.models.IncidentResponse;
+import org.egov.im.web.models.IncidentWrapper;
+import org.egov.im.web.models.RequestInfoWrapper;
+import org.egov.im.web.models.RequestSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,49 +47,48 @@ public class RequestsApiController{
 
 
     @RequestMapping(value="/request/_create", method = RequestMethod.POST)
-    public ResponseEntity<ServiceResponse> requestsCreatePost(@Valid @RequestBody ServiceRequest request) throws IOException {
-        ServiceRequest enrichedReq = imService.create(request);
+    public ResponseEntity<IncidentResponse> requestsCreatePost(@Valid @RequestBody IncidentRequest request) throws IOException {
+        IncidentRequest enrichedReq = imService.create(request);
         ResponseInfo responseInfo = responseInfoFactory.createResponseInfoFromRequestInfo(request.getRequestInfo(), true);
-        ServiceWrapper serviceWrapper = ServiceWrapper.builder().service(enrichedReq.getService()).workflow(enrichedReq.getWorkflow()).build();
-        ServiceResponse response = ServiceResponse.builder().responseInfo(responseInfo).serviceWrappers(Collections.singletonList(serviceWrapper)).build();
+        IncidentWrapper incidentWrapper = IncidentWrapper.builder().incident(enrichedReq.getIncident()).workflow(enrichedReq.getWorkflow()).build();
+        IncidentResponse response = IncidentResponse.builder().responseInfo(responseInfo).IncidentWrappers(Collections.singletonList(incidentWrapper)).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @RequestMapping(value="/request/_search", method = RequestMethod.POST)
-    public ResponseEntity<ServiceResponse> requestsSearchPost(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
+    public ResponseEntity<IncidentResponse> requestsSearchPost(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper,
                                                               @Valid @ModelAttribute RequestSearchCriteria criteria) {
     	
     	String tenantId = criteria.getTenantId();
-        List<ServiceWrapper> serviceWrappers = imService.search(requestInfoWrapper.getRequestInfo(), criteria);
-        Map<String,Integer> dynamicData = imService.getDynamicData(tenantId);
+        List<IncidentWrapper> incidentWrappers = imService.search(requestInfoWrapper.getRequestInfo(), criteria);
+        //Map<String,Integer> dynamicData = imService.getDynamicData(tenantId);
         
-        int complaintsResolved = dynamicData.get(IMConstants.COMPLAINTS_RESOLVED);
-	    int averageResolutionTime = dynamicData.get(IMConstants.AVERAGE_RESOLUTION_TIME);
+        //int complaintsResolved = dynamicData.get(IMConstants.COMPLAINTS_RESOLVED);
+	    //int averageResolutionTime = dynamicData.get(IMConstants.AVERAGE_RESOLUTION_TIME);
 	    int complaintTypes = imService.getComplaintTypes();
         
         ResponseInfo responseInfo = responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true);
-        ServiceResponse response = ServiceResponse.builder().responseInfo(responseInfo).serviceWrappers(serviceWrappers).complaintsResolved(complaintsResolved)
-        		.averageResolutionTime(averageResolutionTime).complaintTypes(complaintTypes).build();
+        IncidentResponse response = IncidentResponse.builder().responseInfo(responseInfo).IncidentWrappers(incidentWrappers).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @RequestMapping(value = "request/_plainsearch", method = RequestMethod.POST)
-    public ResponseEntity<ServiceResponse> requestsPlainSearchPost(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @Valid @ModelAttribute RequestSearchCriteria requestSearchCriteria) {
-        List<ServiceWrapper> serviceWrappers = imService.plainSearch(requestInfoWrapper.getRequestInfo(), requestSearchCriteria);
+    public ResponseEntity<IncidentResponse> requestsPlainSearchPost(@Valid @RequestBody RequestInfoWrapper requestInfoWrapper, @Valid @ModelAttribute RequestSearchCriteria requestSearchCriteria) {
+        List<IncidentWrapper> incidentWrappers = imService.plainSearch(requestInfoWrapper.getRequestInfo(), requestSearchCriteria);
         ResponseInfo responseInfo = responseInfoFactory.createResponseInfoFromRequestInfo(requestInfoWrapper.getRequestInfo(), true);
-        ServiceResponse response = ServiceResponse.builder().responseInfo(responseInfo).serviceWrappers(serviceWrappers).build();
+        IncidentResponse response = IncidentResponse.builder().responseInfo(responseInfo).IncidentWrappers(incidentWrappers).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @RequestMapping(value="/request/_update", method = RequestMethod.POST)
-    public ResponseEntity<ServiceResponse> requestsUpdatePost(@Valid @RequestBody ServiceRequest request) throws IOException {
-        ServiceRequest enrichedReq = imService.update(request);
-        ServiceWrapper serviceWrapper = ServiceWrapper.builder().service(enrichedReq.getService()).workflow(enrichedReq.getWorkflow()).build();
+    public ResponseEntity<IncidentResponse> requestsUpdatePost(@Valid @RequestBody IncidentRequest request) throws IOException {
+        IncidentRequest enrichedReq = imService.update(request);
+        IncidentWrapper incidentWrapper = IncidentWrapper.builder().incident(enrichedReq.getIncident()).workflow(enrichedReq.getWorkflow()).build();
         ResponseInfo responseInfo = responseInfoFactory.createResponseInfoFromRequestInfo(request.getRequestInfo(), true);
-        ServiceResponse response = ServiceResponse.builder().responseInfo(responseInfo).serviceWrappers(Collections.singletonList(serviceWrapper)).build();
+        IncidentResponse response = IncidentResponse.builder().responseInfo(responseInfo).IncidentWrappers(Collections.singletonList(incidentWrapper)).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

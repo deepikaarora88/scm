@@ -48,8 +48,8 @@ public class Service   {
   @Pattern(regexp="^[a-zA-Z0-9._]*$")
   private String requestType;
 
-  @JsonProperty("serviceRequestId")
-  private String serviceRequestId;
+  @JsonProperty("incidentid")
+  private String incidentid;
 
   @JsonProperty("description")
   @Pattern(regexp = "^[a-zA-Z0-9!@#.,/: ()&']*$")

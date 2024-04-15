@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.im.service.NotificationService;
 import org.egov.im.util.IMConstants;
-import org.egov.im.web.models.ServiceRequest;
+import org.egov.im.web.models.IncidentRequest;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -40,14 +40,14 @@ public class NotificationConsumer {
     @KafkaListener(topicPattern = "${im.kafka.notification.topic.pattern}")
     public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
-            ServiceRequest request = mapper.convertValue(record, ServiceRequest.class);
+        	IncidentRequest request = mapper.convertValue(record, IncidentRequest.class);
 
-            String tenantId = request.getService().getTenantId();
+            String tenantId = request.getIncident().getTenantId();
 
             // Adding in MDC so that tracer can add it in header
             MDC.put(IMConstants.TENANTID_MDC_STRING, tenantId);
 
-            notificationService.process(request, topic);
+           // notificationService.process(request, topic);
         } catch (Exception ex) {
             StringBuilder builder = new StringBuilder("Error while listening to value: ").append(record)
                     .append("on topic: ").append(topic);

@@ -7,7 +7,7 @@ import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
 import org.egov.im.config.IMConfiguration;
 import org.egov.im.repository.ServiceRequestRepository;
-import org.egov.im.web.models.ServiceRequest;
+import org.egov.im.web.models.IncidentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,9 +36,9 @@ public class MDMSUtils {
      * @param request
      * @return
      */
-    public Object mDMSCall(ServiceRequest request){
+    public Object mDMSCall(IncidentRequest request){
         RequestInfo requestInfo = request.getRequestInfo();
-        String tenantId = request.getService().getTenantId();
+        String tenantId = request.getIncident().getTenantId();
         MdmsCriteriaReq mdmsCriteriaReq = getMDMSRequest(requestInfo,tenantId);
         Object result = serviceRequestRepository.fetchResult(getMdmsSearchUrl(), mdmsCriteriaReq);
         return result;

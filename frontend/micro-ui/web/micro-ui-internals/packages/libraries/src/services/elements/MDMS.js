@@ -1,5 +1,5 @@
 //HAVE TO CHANGE THI
-import { stringReplaceAll } from "@egovernments/digit-ui-module-pt/src/utils";
+
 import { ApiCacheService } from "../atoms/ApiCacheService";
 import Urls from "../atoms/urls";
 import { Request, ServiceRequest } from "../atoms/Utils/Request";
@@ -683,18 +683,6 @@ const getDssDashboardCriteria = (tenantId, moduleCode) => ({
   },
 });
 
-const getMCollectBillingServiceCriteria = (tenantId, moduleCode, type, filter) => ({
-  type,
-  details: {
-    tenantId: tenantId,
-    moduleDetails: [
-      {
-        moduleName: moduleCode,
-        masterDetails: [{ name: "BusinessService", filter: filter }],
-      },
-    ],
-  },
-});
 
 const getTradeUnitsDataList = (tenantId, moduleCode, type, filter) => ({
   type,
@@ -709,18 +697,7 @@ const getTradeUnitsDataList = (tenantId, moduleCode, type, filter) => ({
   },
 });
 
-const getMCollectApplicationStatusCriteria = (tenantId, moduleCode, type) => ({
-  type,
-  details: {
-    tenantId: tenantId,
-    moduleDetails: [
-      {
-        moduleName: moduleCode,
-        masterDetails: [{ name: "applicationStatus" }],
-      },
-    ],
-  },
-});
+
 
 const getHrmsEmployeeRolesandDesignations = () => ({
   moduleDetails: [
@@ -843,59 +820,11 @@ const getFSTPORejectionReasonCriteria = (tenantId, moduleCode, type) => ({
   },
 });
 
-const getFSMPaymentTypeCriteria = (tenantId, moduleCode, type) => ({
-  type,
-  details: {
-    tenantId: tenantId,
-    moduleDetails: [
-      {
-        moduleName: moduleCode,
-        masterDetails: [
-          {
-            name: "PaymentType",
-            filter: null,
-          },
-        ],
-      },
-    ],
-  },
-});
 
-const getFSMTripNumberCriteria = (tenantId, moduleCode, type) => ({
-  type,
-  details: {
-    tenantId: tenantId,
-    moduleDetails: [
-      {
-        moduleName: moduleCode,
-        masterDetails: [
-          {
-            name: "TripNumber",
-            filter: null,
-          },
-        ],
-      },
-    ],
-  },
-});
 
-const getFSMReceivedPaymentTypeCriteria = (tenantId, moduleCode, type) => ({
-  type,
-  details: {
-    tenantId: tenantId,
-    moduleDetails: [
-      {
-        moduleName: moduleCode,
-        masterDetails: [
-          {
-            name: "ReceivedPaymentType",
-            filter: null,
-          },
-        ],
-      },
-    ],
-  },
-});
+
+
+
 
 const getWSTaxHeadMasterCritera = (tenantId, moduleCode, type) => ({
   type,
@@ -1230,21 +1159,7 @@ const HRGenderType = (MdmsRes) => {
   });
 };
 
-const GetMCollectBusinessService = (MdmsRes) =>
-  MdmsRes["BillingService"].BusinessService.map((businesServiceDetails) => {
-    return {
-      ...businesServiceDetails,
-      i18nKey: `BILLINGSERVICE_BUSINESSSERVICE_${businesServiceDetails.code}`,
-    };
-  });
 
-const GetMCollectApplicationStatus = (MdmsRes) =>
-  MdmsRes["mCollect"].applcationStatus.map((appStatusDetails) => {
-    return {
-      ...appStatusDetails,
-      i18nKey: `BILLINGSERVICE_BUSINESSSERVICE_${appStatusDetails.code}`,
-    };
-  });
 
 const getFSMGenderType = (MdmsRes) => {
   return MdmsRes["common-masters"].GenderType.map((genderDetails) => {
@@ -1373,10 +1288,7 @@ const transformResponse = (type, MdmsRes, moduleCode, tenantId) => {
       return getChargeSlabsCategory(MdmsRes);
     case "DssDashboard":
       return getDssDashboard(MdmsRes);
-    case "BusinessService":
-      return GetMCollectBusinessService(MdmsRes);
-    case "applcatonStatus":
-      return GetMCollectApplicationStatus(MdmsRes);
+    
     case "FSTPPlantInfo":
       return GetFSTPPlantInfo(MdmsRes);
     case "GenderType":
@@ -1621,12 +1533,7 @@ export const MdmsService = {
   getHelpText: (tenantId, moduleCode, type) => {
     return MdmsService.getDataByCriteria(tenantId, getGeneralCriteria(tenantId, moduleCode, type), moduleCode);
   },
-  getMCollectBillingService: (tenantId, moduleCode, type, filter) => {
-    return MdmsService.getDataByCriteria(tenantId, getMCollectBillingServiceCriteria(tenantId, moduleCode, type, filter), moduleCode);
-  },
-  getMCollectApplcationStatus: (tenantId, moduleCode, type, filter) => {
-    return MdmsService.getDataByCriteria(tenantId, getMCollectApplicationStatusCriteria(tenantId, moduleCode, type, filter), moduleCode);
-  },
+  
   getHrmsEmployeeRolesandDesignation: (tenantId) => {
     return MdmsService.call(tenantId, getHrmsEmployeeRolesandDesignations());
   },

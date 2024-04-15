@@ -1,0 +1,1 @@
+ALTER TABLE eg_incident_v2 add column summary character varying(512);

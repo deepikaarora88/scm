@@ -18,11 +18,12 @@ module.exports = function (app) {
     "/localization",
     "/egov-workflow-v2",
     "/pgr-services",
+    "/im-services",
     "/filestore",
     "/egov-hrms",
     "/user-otp",
     "/user",
-    "/fsm",
+    
     "/billing-service",
     "/collection-services",
     "/pdf-service",
@@ -30,22 +31,20 @@ module.exports = function (app) {
     "/vehicle",
     "/vendor",
     "/property-services",
-    "/fsm-calculator/v1/billingSlab/_search",
-    "/pt-calculator-v2",
+   
     "/dashboard-analytics",
     "/echallan-services",
-    "/egov-searcher/bill-genie/mcollectbills/_get",
+    
     "/egov-searcher/bill-genie/billswithaddranduser/_get",
     "/egov-searcher/bill-genie/waterbills/_get",
     "/egov-searcher/bill-genie/seweragebills/_get",
-    "/egov-pdf/download/UC/mcollect-challan",
+  
     "/egov-hrms/employees/_count",
     "/tl-services/v1/_create",
     "/tl-services/v1/_search",
     "/egov-url-shortening/shortener",
     "/inbox/v1/_search",
-    "/tl-services",
-    "/tl-calculator",
+   
     "/edcr",
     "/bpa-services",
     "/noc-services",
@@ -53,15 +52,12 @@ module.exports = function (app) {
     "/egov-document-uploader",
     "/egov-pdf",
     "/egov-survey-services",
-    "/ws-services",
-    "/sw-services",
-    "/ws-calculator",
-    "/sw-calculator/",
+    
     "/egov-searcher",
     "/report",
     "/inbox/v1/dss/_search",
     "/inbox/v1/elastic/_search",
-    "/fsm-calculator",
+   
     "/service-request",
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));

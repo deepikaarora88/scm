@@ -43,27 +43,27 @@ public class EnrichmentService {
      * Enriches the create request with auditDetails. uuids and custom ids from idGen service
      * @param serviceRequest The create request
      */
-    public void enrichCreateRequest(ServiceRequest serviceRequest){
+    public void enrichCreateRequest(IncidentRequest incidentRequest){
 
-        RequestInfo requestInfo = serviceRequest.getRequestInfo();
-        Service service = serviceRequest.getService();
-        Workflow workflow = serviceRequest.getWorkflow();
-        String tenantId = service.getTenantId();
+        RequestInfo requestInfo = incidentRequest.getRequestInfo();
+        Incident incident = incidentRequest.getIncident();
+        Workflow workflow = incidentRequest.getWorkflow();
+        String tenantId = incident.getTenantId();
 
         // Enrich accountId of the logged in citizen
         if(requestInfo.getUserInfo().getType().equalsIgnoreCase(USERTYPE_CITIZEN))
-            serviceRequest.getService().setAccountId(requestInfo.getUserInfo().getUuid());
+        	incidentRequest.getIncident().setAccountId(requestInfo.getUserInfo().getUuid());
 
-        userService.callUserService(serviceRequest);
+        userService.callUserService(incidentRequest);
 
 
-        AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), service,true);
+        AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), incident,true);
 
-        service.setAuditDetails(auditDetails);
-        service.setId(UUID.randomUUID().toString());
-        service.getAddress().setId(UUID.randomUUID().toString());
-        service.getAddress().setTenantId(tenantId);
-        service.setActive(true);
+        incident.setAuditDetails(auditDetails);
+        incident.setId(UUID.randomUUID().toString());
+        incident.getAddress().setId(UUID.randomUUID().toString());
+        incident.getAddress().setTenantId(tenantId);
+        incident.setActive(true);
 
         if(workflow.getVerificationDocuments()!=null){
             workflow.getVerificationDocuments().forEach(document -> {
@@ -71,12 +71,12 @@ public class EnrichmentService {
             });
         }
 
-        if(StringUtils.isEmpty(service.getAccountId()))
-            service.setAccountId(service.getCitizen().getUuid());
+        if(StringUtils.isEmpty(incident.getAccountId()))
+        	incident.setAccountId(incident.getReporter().getUuid());
 
         List<String> customIds = getIdList(requestInfo,tenantId,config.getServiceRequestIdGenName(),config.getServiceRequestIdGenFormat(),1);
 
-        service.setServiceRequestId(customIds.get(0));
+        incident.setIncidentId(customIds.get(0));
 
 
     }
@@ -86,15 +86,15 @@ public class EnrichmentService {
      * Enriches the update request (updates the lastModifiedTime in auditDetails0
      * @param serviceRequest The update request
      */
-    public void enrichUpdateRequest(ServiceRequest serviceRequest){
+    public void enrichUpdateRequest(IncidentRequest incidentRequest){
 
-        RequestInfo requestInfo = serviceRequest.getRequestInfo();
-        Service service = serviceRequest.getService();
-        AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), service,false);
+        RequestInfo requestInfo = incidentRequest.getRequestInfo();
+        Incident incident = incidentRequest.getIncident();
+        AuditDetails auditDetails = utils.getAuditDetails(requestInfo.getUserInfo().getUuid(), incident,false);
 
-        service.setAuditDetails(auditDetails);
+        incident.setAuditDetails(auditDetails);
 
-        userService.callUserService(serviceRequest);
+        userService.callUserService(incidentRequest);
     }
 
     /**

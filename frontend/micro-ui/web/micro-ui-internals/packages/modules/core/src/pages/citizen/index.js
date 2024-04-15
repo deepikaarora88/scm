@@ -67,8 +67,9 @@ const Home = ({
       },
     }
   );
+  console.log("linkdata", linkData)
 
-  const classname = Digit.Hooks.fsm.useRouteSubscription(pathname);
+  const classname = "";
   const { t } = useTranslation();
   const { path } = useRouteMatch();
   const history = useHistory();

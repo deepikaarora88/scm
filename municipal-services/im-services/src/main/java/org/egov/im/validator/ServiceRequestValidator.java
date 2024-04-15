@@ -39,7 +39,7 @@ public class ServiceRequestValidator {
      * @param request Request for creating the complaint
      * @param mdmsData The master data for im
      */
-    public void validateCreate(ServiceRequest request, Object mdmsData){
+    public void validateCreate(IncidentRequest request, Object mdmsData){
         Map<String,String> errorMap = new HashMap<>();
         validateUserData(request,errorMap);
         //validateSource(request.getService().getSource());
@@ -55,19 +55,19 @@ public class ServiceRequestValidator {
      * @param request The request to update complaint
      * @param mdmsData The master data for im
      */
-    public void validateUpdate(ServiceRequest request, Object mdmsData){
+    public void validateUpdate(IncidentRequest request, Object mdmsData){
 
-        String id = request.getService().getId();
-        String tenantId = request.getService().getTenantId();
+        String id = request.getIncident().getId();
+        String tenantId = request.getIncident().getTenantId();
         //validateSource(request.getService().getSource());
-        validateMDMS(request, mdmsData);
-        validateDepartment(request, mdmsData);
+        //validateMDMS(request, mdmsData);
+        //validateDepartment(request, mdmsData);
         validateReOpen(request);
         RequestSearchCriteria criteria = RequestSearchCriteria.builder().ids(Collections.singleton(id)).tenantId(tenantId).build();
         criteria.setIsPlainSearch(false);
-        List<ServiceWrapper> serviceWrappers = repository.getServiceWrappers(criteria);
+        List<IncidentWrapper> incidentWrappers = repository.getIncidentWrappers(criteria);
 
-        if(CollectionUtils.isEmpty(serviceWrappers))
+        if(CollectionUtils.isEmpty(incidentWrappers))
             throw new CustomException("INVALID_UPDATE","The record that you are trying to update does not exists");
 
         // TO DO
@@ -79,10 +79,10 @@ public class ServiceRequestValidator {
      * @param request The request of creating/updating complaint
      * @param errorMap HashMap to capture any errors
      */
-    private void validateUserData(ServiceRequest request,Map<String, String> errorMap){
+    private void validateUserData(IncidentRequest request,Map<String, String> errorMap){
 
         RequestInfo requestInfo = request.getRequestInfo();
-        String accountId = request.getService().getAccountId();
+        String accountId = request.getIncident().getAccountId();
 
         /*if(requestInfo.getUserInfo().getType().equalsIgnoreCase(USERTYPE_CITIZEN)
             && StringUtils.isEmpty(accountId)){
@@ -95,7 +95,7 @@ public class ServiceRequestValidator {
         }*/
 
         if(requestInfo.getUserInfo().getType().equalsIgnoreCase(USERTYPE_EMPLOYEE)){
-            User citizen = request.getService().getCitizen();
+            User citizen = request.getIncident().getReporter();
             if(citizen == null)
                 errorMap.put("INVALID_REQUEST","Citizen object cannot be null");
             else if(citizen.getMobileNumber()==null || citizen.getName()==null)
@@ -110,9 +110,9 @@ public class ServiceRequestValidator {
      * @param request The request of creating/updating complaint
      * @param mdmsData The master data for im
      */
-    private void validateMDMS(ServiceRequest request, Object mdmsData){
+    private void validateMDMS(IncidentRequest request, Object mdmsData){
 
-        String serviceCode = request.getService().getIncidentType();
+        String serviceCode = request.getIncident().getIncidentType();
         String jsonPath = MDMS_SERVICEDEF_SEARCH.replace("{SERVICEDEF}",serviceCode);
 
         List<Object> res = null;
@@ -136,9 +136,9 @@ public class ServiceRequestValidator {
      * @param request
      * @param mdmsData
      */
-    private void validateDepartment(ServiceRequest request, Object mdmsData){
+    private void validateDepartment(IncidentRequest request, Object mdmsData){
 
-        String serviceCode = request.getService().getIncidentType();
+        String serviceCode = request.getIncident().getIncidentType();
         List<String> assignes = request.getWorkflow().getAssignes();
 
         if(CollectionUtils.isEmpty(assignes))
@@ -178,18 +178,18 @@ public class ServiceRequestValidator {
      *
      * @param request
      */
-    private void validateReOpen(ServiceRequest request){
+    private void validateReOpen(IncidentRequest request){
 
         if(!request.getWorkflow().getAction().equalsIgnoreCase(PGR_WF_REOPEN))
             return;
 
 
-        Service service = request.getService();
+        Incident incident = request.getIncident();
         RequestInfo requestInfo = request.getRequestInfo();
-        Long lastModifiedTime = service.getAuditDetails().getLastModifiedTime();
+        Long lastModifiedTime = incident.getAuditDetails().getLastModifiedTime();
 
         if(requestInfo.getUserInfo().getType().equalsIgnoreCase(USERTYPE_CITIZEN)){
-            if(!requestInfo.getUserInfo().getUuid().equalsIgnoreCase(service.getAccountId()))
+            if(!requestInfo.getUserInfo().getUuid().equalsIgnoreCase(incident.getAccountId()))
                 throw new CustomException("INVALID_ACTION","Not authorized to re-open the complain");
         }
 
@@ -209,7 +209,7 @@ public class ServiceRequestValidator {
         * Checks if tenatId is provided with the search params
         * */
         if( (criteria.getMobileNumber()!=null 
-                || criteria.getServiceRequestId()!=null || criteria.getIds()!=null
+                || criteria.getIncidentId()!=null || criteria.getIds()!=null
                 || criteria.getServiceCode()!=null )
                 && criteria.getTenantId()==null)
             throw new CustomException("INVALID_SEARCH","TenantId is mandatory search param");
@@ -247,8 +247,8 @@ public class ServiceRequestValidator {
         if(criteria.getServiceCode()!=null && !allowedParams.contains("serviceCode"))
             throw new CustomException("INVALID SEARCH","Search on serviceCode is not allowed");
 
-        if(criteria.getServiceRequestId()!=null && !allowedParams.contains("serviceRequestId"))
-            throw new CustomException("INVALID SEARCH","Search on serviceRequestId is not allowed");
+        if(criteria.getIncidentId()!=null && !allowedParams.contains("incidentId"))
+            throw new CustomException("INVALID SEARCH","Search on incidentid is not allowed");
 
         if(criteria.getApplicationStatus()!=null && !allowedParams.contains("applicationStatus"))
             throw new CustomException("INVALID SEARCH","Search on applicationStatus is not allowed");

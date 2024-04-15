@@ -7,8 +7,8 @@ const useComplaintStatusCount = (complaints) => {
   let tenantId = Digit.ULBService.getCurrentTenantId();
 
   const getCount = async (value) => {
-    let response = await Digit.PGRService.count(tenantId, { applicationStatus: value });
-    return response?.count || "";
+    let response = "";
+    return response || "";
   };
 
   useEffect(() => {

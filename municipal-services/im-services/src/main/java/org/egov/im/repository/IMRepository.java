@@ -5,9 +5,9 @@ import org.egov.im.repository.rowmapper.IMQueryBuilder;
 import org.egov.im.repository.rowmapper.IMRowMapper;
 import org.egov.im.util.IMUtils;
 import org.egov.im.util.IMConstants;
-import org.egov.im.web.models.ServiceWrapper;
+import org.egov.im.web.models.IncidentWrapper;
 import org.egov.im.web.models.RequestSearchCriteria;
-import org.egov.im.web.models.Service;
+import org.egov.im.web.models.Incident;
 import org.egov.im.web.models.Workflow;
 import org.egov.tracer.model.CustomException;
 import org.egov.common.exception.InvalidTenantIdException;
@@ -51,14 +51,14 @@ public class IMRepository {
      * @param criteria
      * @return
      */
-    public List<ServiceWrapper> getServiceWrappers(RequestSearchCriteria criteria){
-        List<Service> services = getServices(criteria);
-        List<String> serviceRequestids = services.stream().map(Service::getServiceRequestId).collect(Collectors.toList());
+    public List<IncidentWrapper> getIncidentWrappers(RequestSearchCriteria criteria){
+        List<Incident> incidents = getIncidents(criteria);
+        List<String> serviceRequestids = incidents.stream().map(Incident::getIncidentId).collect(Collectors.toList());
         Map<String, Workflow> idToWorkflowMap = new HashMap<>();
-        List<ServiceWrapper> serviceWrappers = new ArrayList<>();
+        List<IncidentWrapper> serviceWrappers = new ArrayList<>();
 
-        for(Service service : services){
-            ServiceWrapper serviceWrapper = ServiceWrapper.builder().service(service).workflow(idToWorkflowMap.get(service.getServiceRequestId())).build();
+        for(Incident incident : incidents){
+        	IncidentWrapper serviceWrapper = IncidentWrapper.builder().incident(incident).workflow(idToWorkflowMap.get(incident.getIncidentId())).build();
             serviceWrappers.add(serviceWrapper);
         }
         return serviceWrappers;
@@ -69,7 +69,7 @@ public class IMRepository {
      * @param criteria
      * @return
      */
-    public List<Service> getServices(RequestSearchCriteria criteria) {
+    public List<Incident> getIncidents(RequestSearchCriteria criteria) {
 
         String tenantId = criteria.getTenantId();
         List<Object> preparedStmtList = new ArrayList<>();
@@ -80,7 +80,7 @@ public class IMRepository {
             throw new CustomException("PGR_UPDATE_ERROR",
                     "TenantId length is not sufficient to replace query schema in a multi state instance");
         }
-        List<Service> services =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
+        List<Incident> services =  jdbcTemplate.query(query, preparedStmtList.toArray(), rowMapper);
         return services;
     }
 

@@ -10,11 +10,12 @@ module.exports = function (app) {
     "/localization",
     "/egov-workflow-v2",
     "/pgr-services",
+    "/im-services",
     "/filestore",
     "/egov-hrms",
     "/user-otp",
     "/user",
-    "/fsm",
+    
     "/billing-service",
     "/collection-services",
     "/pdf-service",
@@ -22,7 +23,7 @@ module.exports = function (app) {
     "/vehicle",
     "/vendor",
     "/property-services",
-    "/fsm-calculator/v1/billingSlab/_search",
+    
   ].forEach((location) =>
     app.use(location, createProxy)
   );

@@ -12,13 +12,13 @@ import java.util.List;
 public class IMConstants {
 
 
-    public static final String PGR_BUSINESSSERVICE = "im";
+    public static final String PGR_BUSINESSSERVICE = "Incident";
 
     public static final String USERTYPE_EMPLOYEE = "EMPLOYEE";
 
     public static final String USERTYPE_CITIZEN = "CITIZEN";
 
-    public static final String PGR_MODULENAME = "im";
+    public static final String PGR_MODULENAME = "im-services";
 
     public static final String PGR_WF_REOPEN = "REOPEN";
 

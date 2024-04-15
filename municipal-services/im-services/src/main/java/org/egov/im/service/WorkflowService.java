@@ -20,7 +20,7 @@ import static org.egov.im.util.IMConstants.*;
 @org.springframework.stereotype.Service
 public class WorkflowService {
 
-    private IMConfiguration pgrConfiguration;
+    private IMConfiguration imConfiguration;
 
     private ServiceRequestRepository repository;
 
@@ -28,8 +28,8 @@ public class WorkflowService {
 
 
     @Autowired
-    public WorkflowService(IMConfiguration pgrConfiguration, ServiceRequestRepository repository, ObjectMapper mapper) {
-        this.pgrConfiguration = pgrConfiguration;
+    public WorkflowService(IMConfiguration imConfiguration, ServiceRequestRepository repository, ObjectMapper mapper) {
+        this.imConfiguration = imConfiguration;
         this.repository = repository;
         this.mapper = mapper;
     }
@@ -39,10 +39,10 @@ public class WorkflowService {
      * Should return the applicable BusinessService for the given request
      *
      * */
-    public BusinessService getBusinessService(ServiceRequest serviceRequest) {
-        String tenantId = serviceRequest.getService().getTenantId();
+    public BusinessService getBusinessService(IncidentRequest incidentRequest) {
+        String tenantId = incidentRequest.getIncident().getTenantId();
         StringBuilder url = getSearchURLWithParams(tenantId, PGR_BUSINESSSERVICE);
-        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(serviceRequest.getRequestInfo()).build();
+        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(incidentRequest.getRequestInfo()).build();
         Object result = repository.fetchResult(url, requestInfoWrapper);
         BusinessServiceResponse response = null;
         try {
@@ -63,16 +63,16 @@ public class WorkflowService {
      * return the updated status of the application
      *
      * */
-    public String updateWorkflowStatus(ServiceRequest serviceRequest) {
-        ProcessInstance processInstance = getProcessInstanceForPGR(serviceRequest);
-        ProcessInstanceRequest workflowRequest = new ProcessInstanceRequest(serviceRequest.getRequestInfo(), Collections.singletonList(processInstance));
+    public String updateWorkflowStatus(IncidentRequest incidentRequest) {
+        ProcessInstance processInstance = getProcessInstanceForIM(incidentRequest);
+        ProcessInstanceRequest workflowRequest = new ProcessInstanceRequest(incidentRequest.getRequestInfo(), Collections.singletonList(processInstance));
         State state = callWorkFlow(workflowRequest);
-        serviceRequest.getService().setApplicationStatus(state.getApplicationStatus());
+        incidentRequest.getIncident().setApplicationStatus(state.getApplicationStatus());
         return state.getApplicationStatus();
     }
 
 
-    public void validateAssignee(ServiceRequest serviceRequest) {
+    public void validateAssignee(IncidentRequest incidentRequest) {
         /*
          * Call HRMS service and validate of the assignee belongs to same department
          * as the employee assigning it
@@ -90,8 +90,8 @@ public class WorkflowService {
      */
     private StringBuilder getSearchURLWithParams(String tenantId, String businessService) {
 
-        StringBuilder url = new StringBuilder(pgrConfiguration.getWfHost());
-        url.append(pgrConfiguration.getWfBusinessServiceSearchPath());
+        StringBuilder url = new StringBuilder(imConfiguration.getWfHost());
+        url.append(imConfiguration.getWfBusinessServiceSearchPath());
         url.append("?tenantId=");
         url.append(tenantId);
         url.append("&businessServices=");
@@ -108,21 +108,21 @@ public class WorkflowService {
     }
 
 
-    public List<ServiceWrapper> enrichWorkflow(RequestInfo requestInfo, List<ServiceWrapper> serviceWrappers) {
+    public List<IncidentWrapper> enrichWorkflow(RequestInfo requestInfo, List<IncidentWrapper> incidentWrappers) {
 
         // FIX ME FOR BULK SEARCH
-        Map<String, List<ServiceWrapper>> tenantIdToServiceWrapperMap = getTenantIdToServiceWrapperMap(serviceWrappers);
+        Map<String, List<IncidentWrapper>> tenantIdToServiceWrapperMap = getTenantIdToServiceWrapperMap(incidentWrappers);
 
-        List<ServiceWrapper> enrichedServiceWrappers = new ArrayList<>();
+        List<IncidentWrapper> enrichedServiceWrappers = new ArrayList<>();
 
         for(String tenantId : tenantIdToServiceWrapperMap.keySet()) {
 
             List<String> serviceRequestIds = new ArrayList<>();
 
-            List<ServiceWrapper> tenantSpecificWrappers = tenantIdToServiceWrapperMap.get(tenantId);
+            List<IncidentWrapper> tenantSpecificWrappers = tenantIdToServiceWrapperMap.get(tenantId);
 
             tenantSpecificWrappers.forEach(pgrEntity -> {
-                serviceRequestIds.add(pgrEntity.getService().getServiceRequestId());
+                serviceRequestIds.add(pgrEntity.getIncident().getIncidentId());
             });
 
             RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(requestInfo).build();
@@ -144,7 +144,7 @@ public class WorkflowService {
             Map<String, Workflow> businessIdToWorkflow = getWorkflow(processInstanceResponse.getProcessInstances());
 
             tenantSpecificWrappers.forEach(pgrEntity -> {
-                pgrEntity.setWorkflow(businessIdToWorkflow.get(pgrEntity.getService().getServiceRequestId()));
+                pgrEntity.setWorkflow(businessIdToWorkflow.get(pgrEntity.getIncident().getIncidentId()));
             });
 
             enrichedServiceWrappers.addAll(tenantSpecificWrappers);
@@ -154,15 +154,15 @@ public class WorkflowService {
 
     }
 
-    private Map<String, List<ServiceWrapper>> getTenantIdToServiceWrapperMap(List<ServiceWrapper> serviceWrappers) {
-        Map<String, List<ServiceWrapper>> resultMap = new HashMap<>();
-        for(ServiceWrapper serviceWrapper : serviceWrappers){
-            if(resultMap.containsKey(serviceWrapper.getService().getTenantId())){
-                resultMap.get(serviceWrapper.getService().getTenantId()).add(serviceWrapper);
+    private Map<String, List<IncidentWrapper>> getTenantIdToServiceWrapperMap(List<IncidentWrapper> incidentWrappers) {
+        Map<String, List<IncidentWrapper>> resultMap = new HashMap<>();
+        for(IncidentWrapper incidentWrapper : incidentWrappers){
+            if(resultMap.containsKey(incidentWrapper.getIncident().getTenantId())){
+                resultMap.get(incidentWrapper.getIncident().getTenantId()).add(incidentWrapper);
             }else{
-                List<ServiceWrapper> serviceWrapperList = new ArrayList<>();
-                serviceWrapperList.add(serviceWrapper);
-                resultMap.put(serviceWrapper.getService().getTenantId(), serviceWrapperList);
+                List<IncidentWrapper> incidentWrapperList = new ArrayList<>();
+                incidentWrapperList.add(incidentWrapper);
+                resultMap.put(incidentWrapper.getIncident().getTenantId(), incidentWrapperList);
             }
         }
         return resultMap;
@@ -173,16 +173,16 @@ public class WorkflowService {
      *
      * @param request
      */
-    private ProcessInstance getProcessInstanceForPGR(ServiceRequest request) {
+    private ProcessInstance getProcessInstanceForIM(IncidentRequest request) {
 
-        Service service = request.getService();
+        Incident incident = request.getIncident();
         Workflow workflow = request.getWorkflow();
 
         ProcessInstance processInstance = new ProcessInstance();
-        processInstance.setBusinessId(service.getServiceRequestId());
+        processInstance.setBusinessId(incident.getIncidentId());
         processInstance.setAction(request.getWorkflow().getAction());
         processInstance.setModuleName(PGR_MODULENAME);
-        processInstance.setTenantId(service.getTenantId());
+        processInstance.setTenantId(incident.getTenantId());
         processInstance.setBusinessService(getBusinessService(request).getBusinessService());
         processInstance.setDocuments(request.getWorkflow().getVerificationDocuments());
         processInstance.setComment(workflow.getComments());
@@ -240,21 +240,21 @@ public class WorkflowService {
     private State callWorkFlow(ProcessInstanceRequest workflowReq) {
 
         ProcessInstanceResponse response = null;
-        StringBuilder url = new StringBuilder(pgrConfiguration.getWfHost().concat(pgrConfiguration.getWfTransitionPath()));
+        StringBuilder url = new StringBuilder(imConfiguration.getWfHost().concat(imConfiguration.getWfTransitionPath()));
         Object optional = repository.fetchResult(url, workflowReq);
         response = mapper.convertValue(optional, ProcessInstanceResponse.class);
         return response.getProcessInstances().get(0).getState();
     }
 
 
-    public StringBuilder getprocessInstanceSearchURL(String tenantId, String serviceRequestId) {
+    public StringBuilder getprocessInstanceSearchURL(String tenantId, String IncidentId) {
 
-        StringBuilder url = new StringBuilder(pgrConfiguration.getWfHost());
-        url.append(pgrConfiguration.getWfProcessInstanceSearchPath());
+        StringBuilder url = new StringBuilder(imConfiguration.getWfHost());
+        url.append(imConfiguration.getWfProcessInstanceSearchPath());
         url.append("?tenantId=");
         url.append(tenantId);
         url.append("&businessIds=");
-        url.append(serviceRequestId);
+        url.append(IncidentId);
         return url;
 
     }

@@ -70,10 +70,10 @@ public class IMConfiguration {
     @Value("${egov.idgen.path}")
     private String idGenPath;
 
-    @Value("${egov.idgen.im.serviceRequestId.name}")
+    @Value("${egov.idgen.im.IncidentId.name}")
     private String serviceRequestIdGenName;
 
-    @Value("${egov.idgen.im.serviceRequestId.format}")
+    @Value("${egov.idgen.im.IncidentId.format}")
     private String serviceRequestIdGenFormat;
 
     //Workflow Config

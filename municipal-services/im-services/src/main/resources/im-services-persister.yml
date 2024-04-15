@@ -7,85 +7,103 @@ serviceMaps:
     isTransaction: true
     queryMaps:
 
-    - query: INSERT INTO eg_incident_v2(id, tenantid, incidenttype, servicerequestid, description, accountid, additionaldetails, applicationstatus, source, createdby, createdtime, lastmodifiedby, lastmodifiedtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-      basePath: service
+    - query: INSERT INTO eg_incident_v2(id, tenantid, incidenttype, incidentid, description, accountid, additionaldetails, applicationstatus, requesttype, environment, reporter, assignee, urgency, impact, pendingreason, rating, createdby, createdtime, lastmodifiedby, lastmodifiedtime,priority, affectedServices) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      basePath: incident
       jsonMaps:
-      - jsonPath: $.service.id
+      - jsonPath: $.incident.id
 
-      - jsonPath: $.service.tenantId
+      - jsonPath: $.incident.tenantId
 
-      - jsonPath: $.service.incidentType
+      - jsonPath: $.incident.incidentType
 
-      - jsonPath: $.service.serviceRequestId
+      - jsonPath: $.incident.incidentid
 
-      - jsonPath: $.service.description
+      - jsonPath: $.incident.description
 
-      - jsonPath: $.service.accountId
+      - jsonPath: $.incident.accountId
 
-      - jsonPath: $.service.additionalDetail
+      - jsonPath: $.incident.additionalDetail
         type: JSON
         dbType: JSONB
 
-      - jsonPath: $.service.applicationStatus
+      - jsonPath: $.incident.applicationStatus
 
-      - jsonPath: $.service.source
+      - jsonPath: $.incident.requesttype
 
-      - jsonPath: $.service.auditDetails.createdBy
+      - jsonPath: $.incident.environment
 
-      - jsonPath: $.service.auditDetails.createdTime
+      - jsonPath: $.incident.reporter
 
-      - jsonPath: $.service.auditDetails.lastModifiedBy
+      - jsonPath: $.incident.assignee
 
-      - jsonPath: $.service.auditDetails.lastModifiedTime
+      - jsonPath: $.incident.urgency
+
+      - jsonPath: $.incident.impact
+
+      - jsonPath: $.incident.pendingreason
+
+      - jsonPath: $.incident.rating
+
+      - jsonPath: $.incident.auditDetails.createdBy
+
+      - jsonPath: $.incident.auditDetails.createdTime
+
+      - jsonPath: $.incident.auditDetails.lastModifiedBy
+
+      - jsonPath: $.incident.auditDetails.lastModifiedTime
+
+      - jsonPath: $.incident.priority
+
+      - jsonPath: $.incident.affectedServices
 
     - query: INSERT INTO eg_incident_address_v2(id, tenantid, parentid, doorno, plotno, buildingname, street, landmark, city, pincode, locality, district, region, state, country, latitude, longitude, additionaldetails, createdby, createdtime, lastmodifiedby, lastmodifiedtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-      basePath: service.address
+      basePath: incident.address
       jsonMaps:
-      - jsonPath: $.service.address.id
+      - jsonPath: $.incident.address.id
 
-      - jsonPath: $.service.address.tenantId
+      - jsonPath: $.incident.address.tenantId
 
-      - jsonPath: $.service.id
+      - jsonPath: $.incident.id
 
-      - jsonPath: $.service.address.doorNo
+      - jsonPath: $.incident.address.doorNo
 
-      - jsonPath: $.service.address.plotNo
+      - jsonPath: $.incident.address.plotNo
 
-      - jsonPath: $.service.address.buildingName
+      - jsonPath: $.incident.address.buildingName
 
-      - jsonPath: $.service.address.street
+      - jsonPath: $.incident.address.street
 
-      - jsonPath: $.service.address.landmark
+      - jsonPath: $.incident.address.landmark
 
-      - jsonPath: $.service.address.city
+      - jsonPath: $.incident.address.city
 
-      - jsonPath: $.service.address.pincode
+      - jsonPath: $.incident.address.pincode
 
-      - jsonPath: $.service.address.locality.code
+      - jsonPath: $.incident.address.locality.code
 
-      - jsonPath: $.service.address.district
+      - jsonPath: $.incident.address.district
 
-      - jsonPath: $.service.address.region
+      - jsonPath: $.incident.address.region
 
-      - jsonPath: $.service.address.state
+      - jsonPath: $.incident.address.state
 
-      - jsonPath: $.service.address.country
+      - jsonPath: $.incident.address.country
 
-      - jsonPath: $.service.address.geoLocation.latitude
+      - jsonPath: $.incident.address.geoLocation.latitude
 
-      - jsonPath: $.service.address.geoLocation.longitude
+      - jsonPath: $.incident.address.geoLocation.longitude
 
-      - jsonPath: $.service.address.additionDetails
+      - jsonPath: $.incident.address.additionDetails
         type: JSON
         dbType: JSONB
 
-      - jsonPath: $.service.auditDetails.createdBy
+      - jsonPath: $.incident.auditDetails.createdBy
 
-      - jsonPath: $.service.auditDetails.createdTime
+      - jsonPath: $.incident.auditDetails.createdTime
 
-      - jsonPath: $.service.auditDetails.lastModifiedBy
+      - jsonPath: $.incident.auditDetails.lastModifiedBy
 
-      - jsonPath: $.service.auditDetails.lastModifiedTime
+      - jsonPath: $.incident.auditDetails.lastModifiedTime
 
 
 
@@ -95,70 +113,70 @@ serviceMaps:
     isTransaction: true
     queryMaps:
 
-    - query: UPDATE eg_incident_v2 SET incidenttype=?, rating = ?,servicerequestid=?, description=?, accountid=?, additionaldetails=?, applicationstatus=?, lastmodifiedby=?, lastmodifiedtime=? WHERE id=?;
-      basePath: service
+    - query: UPDATE eg_incident_v2 SET incidenttype=?, rating = ?,incidentid=?, description=?, accountid=?, additionaldetails=?, applicationstatus=?, lastmodifiedby=?, lastmodifiedtime=? WHERE id=?;
+      basePath: incident
       jsonMaps:
-      - jsonPath: $.service.incidentType
+      - jsonPath: $.incident.incidentType
 
-      - jsonPath: $.service.rating
+      - jsonPath: $.incident.rating
 
-      - jsonPath: $.service.serviceRequestId
+      - jsonPath: $.incident.incidentid
 
-      - jsonPath: $.service.description
+      - jsonPath: $.incident.description
 
-      - jsonPath: $.service.accountId
+      - jsonPath: $.incident.accountId
 
-      - jsonPath: $.service.additionalDetail
+      - jsonPath: $.incident.additionalDetail
         type: JSON
         dbType: JSONB
 
-      - jsonPath: $.service.applicationStatus
+      - jsonPath: $.incident.applicationStatus
 
-      - jsonPath: $.service.auditDetails.lastModifiedBy
+      - jsonPath: $.incident.auditDetails.lastModifiedBy
 
-      - jsonPath: $.service.auditDetails.lastModifiedTime
+      - jsonPath: $.incident.auditDetails.lastModifiedTime
 
-      - jsonPath: $.service.id
+      - jsonPath: $.incident.id
 
 
     - query: UPDATE eg_incident_address_v2 SET doorno=?, plotno=?, buildingname=?, street=?, landmark=?, city=?, pincode=?, locality=?, district=?, region=?, state=?, country=?, latitude=?, longitude=?,additionaldetails=?, lastmodifiedby=?, lastmodifiedtime=? WHERE id=?;
-      basePath: service.address
+      basePath: incident.address
       jsonMaps:
 
-      - jsonPath: $.service.address.doorNo
+      - jsonPath: $.incident.address.doorNo
 
-      - jsonPath: $.service.address.plotNo
+      - jsonPath: $.incident.address.plotNo
 
-      - jsonPath: $.service.address.buildingName
+      - jsonPath: $.incident.address.buildingName
 
-      - jsonPath: $.service.address.street
+      - jsonPath: $.incident.address.street
 
-      - jsonPath: $.service.address.landmark
+      - jsonPath: $.incident.address.landmark
 
-      - jsonPath: $.service.address.city
+      - jsonPath: $.incident.address.city
 
-      - jsonPath: $.service.address.pincode
+      - jsonPath: $.incident.address.pincode
 
-      - jsonPath: $.service.address.locality.code
+      - jsonPath: $.incident.address.locality.code
 
-      - jsonPath: $.service.address.district
+      - jsonPath: $.incident.address.district
 
-      - jsonPath: $.service.address.region
+      - jsonPath: $.incident.address.region
 
-      - jsonPath: $.service.address.state
+      - jsonPath: $.incident.address.state
 
-      - jsonPath: $.service.address.country
+      - jsonPath: $.incident.address.country
 
-      - jsonPath: $.service.address.geoLocation.latitude
+      - jsonPath: $.incident.address.geoLocation.latitude
 
-      - jsonPath: $.service.address.geoLocation.longitude
+      - jsonPath: $.incident.address.geoLocation.longitude
 
-      - jsonPath: $.service.address.additionDetails
+      - jsonPath: $.incident.address.additionDetails
         type: JSON
         dbType: JSONB
 
-      - jsonPath: $.service.auditDetails.lastModifiedBy
+      - jsonPath: $.incident.auditDetails.lastModifiedBy
 
-      - jsonPath: $.service.auditDetails.lastModifiedTime
+      - jsonPath: $.incident.auditDetails.lastModifiedTime
 
-      - jsonPath: $.service.address.id
+      - jsonPath: $.incident.address.id

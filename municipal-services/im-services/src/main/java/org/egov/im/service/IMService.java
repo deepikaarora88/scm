@@ -7,9 +7,9 @@ import org.egov.im.producer.Producer;
 import org.egov.im.repository.IMRepository;
 import org.egov.im.util.MDMSUtils;
 import org.egov.im.validator.ServiceRequestValidator;
-import org.egov.im.web.models.ServiceWrapper;
+import org.egov.im.web.models.IncidentWrapper;
 import org.egov.im.web.models.RequestSearchCriteria;
-import org.egov.im.web.models.ServiceRequest;
+import org.egov.im.web.models.IncidentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -60,8 +60,8 @@ public class IMService {
      * @param request The service request containg the complaint information
      * @return
      */
-    public ServiceRequest create(ServiceRequest request){
-        String tenantId = request.getService().getTenantId();
+    public IncidentRequest create(IncidentRequest request){
+        String tenantId = request.getIncident().getTenantId();
         Object mdmsData = mdmsUtils.mDMSCall(request);
         validator.validateCreate(request, mdmsData);
         enrichmentService.enrichCreateRequest(request);
@@ -77,7 +77,7 @@ public class IMService {
      * @param criteria The search criteria containg the params on which to search
      * @return
      */
-    public List<ServiceWrapper> search(RequestInfo requestInfo, RequestSearchCriteria criteria){
+    public List<IncidentWrapper> search(RequestInfo requestInfo, RequestSearchCriteria criteria){
         validator.validateSearch(requestInfo, criteria);
 
         enrichmentService.enrichSearchRequest(requestInfo, criteria);
@@ -90,24 +90,25 @@ public class IMService {
 
         criteria.setIsPlainSearch(false);
 
-        List<ServiceWrapper> serviceWrappers = repository.getServiceWrappers(criteria);
+        List<IncidentWrapper> incidentWrappers = repository.getIncidentWrappers(criteria);
 
-        if(CollectionUtils.isEmpty(serviceWrappers))
+        if(CollectionUtils.isEmpty(incidentWrappers))
             return new ArrayList<>();;
 
-        userService.enrichUsers(serviceWrappers);
-        List<ServiceWrapper> enrichedServiceWrappers = workflowService.enrichWorkflow(requestInfo,serviceWrappers);
-        Map<Long, List<ServiceWrapper>> sortedWrappers = new TreeMap<>(Collections.reverseOrder());
-        for(ServiceWrapper svc : enrichedServiceWrappers){
-            if(sortedWrappers.containsKey(svc.getService().getAuditDetails().getCreatedTime())){
-                sortedWrappers.get(svc.getService().getAuditDetails().getCreatedTime()).add(svc);
+         //to add later
+        //userService.enrichUsers(serviceWrappers);
+        List<IncidentWrapper> enrichedServiceWrappers = workflowService.enrichWorkflow(requestInfo,incidentWrappers);
+        Map<Long, List<IncidentWrapper>> sortedWrappers = new TreeMap<>(Collections.reverseOrder());
+        for(IncidentWrapper svc : enrichedServiceWrappers){
+            if(sortedWrappers.containsKey(svc.getIncident().getAuditDetails().getCreatedTime())){
+                sortedWrappers.get(svc.getIncident().getAuditDetails().getCreatedTime()).add(svc);
             }else{
-                List<ServiceWrapper> serviceWrapperList = new ArrayList<>();
-                serviceWrapperList.add(svc);
-                sortedWrappers.put(svc.getService().getAuditDetails().getCreatedTime(), serviceWrapperList);
+                List<IncidentWrapper> incidentWrapperList = new ArrayList<>();
+                incidentWrapperList.add(svc);
+                sortedWrappers.put(svc.getIncident().getAuditDetails().getCreatedTime(), incidentWrapperList);
             }
         }
-        List<ServiceWrapper> sortedServiceWrappers = new ArrayList<>();
+        List<IncidentWrapper> sortedServiceWrappers = new ArrayList<>();
         for(Long createdTimeDesc : sortedWrappers.keySet()){
             sortedServiceWrappers.addAll(sortedWrappers.get(createdTimeDesc));
         }
@@ -120,8 +121,8 @@ public class IMService {
      * @param request The request containing the complaint to be updated
      * @return
      */
-    public ServiceRequest update(ServiceRequest request){
-        String tenantId = request.getService().getTenantId();
+    public IncidentRequest update(IncidentRequest request){
+        String tenantId = request.getIncident().getTenantId();
         Object mdmsData = mdmsUtils.mDMSCall(request);
         validator.validateUpdate(request, mdmsData);
         enrichmentService.enrichUpdateRequest(request);
@@ -143,7 +144,7 @@ public class IMService {
     }
 
 
-    public List<ServiceWrapper> plainSearch(RequestInfo requestInfo, RequestSearchCriteria criteria) {
+    public List<IncidentWrapper> plainSearch(RequestInfo requestInfo, RequestSearchCriteria criteria) {
         validator.validatePlainSearch(criteria);
 
         criteria.setIsPlainSearch(true);
@@ -157,30 +158,30 @@ public class IMService {
         if(criteria.getLimit()!=null && criteria.getLimit() > config.getMaxLimit())
             criteria.setLimit(config.getMaxLimit());
 
-        List<ServiceWrapper> serviceWrappers = repository.getServiceWrappers(criteria);
+        List<IncidentWrapper> incidentWrappers = repository.getIncidentWrappers(criteria);
 
-        if(CollectionUtils.isEmpty(serviceWrappers)){
+        if(CollectionUtils.isEmpty(incidentWrappers)){
             return new ArrayList<>();
         }
 
-        userService.enrichUsers(serviceWrappers);
-        List<ServiceWrapper> enrichedServiceWrappers = workflowService.enrichWorkflow(requestInfo, serviceWrappers);
+        userService.enrichUsers(incidentWrappers);
+        List<IncidentWrapper> enrichedServiceWrappers = workflowService.enrichWorkflow(requestInfo, incidentWrappers);
 
-        Map<Long, List<ServiceWrapper>> sortedWrappers = new TreeMap<>(Collections.reverseOrder());
-        for(ServiceWrapper svc : enrichedServiceWrappers){
-            if(sortedWrappers.containsKey(svc.getService().getAuditDetails().getCreatedTime())){
-                sortedWrappers.get(svc.getService().getAuditDetails().getCreatedTime()).add(svc);
+        Map<Long, List<IncidentWrapper>> sortedWrappers = new TreeMap<>(Collections.reverseOrder());
+        for(IncidentWrapper svc : enrichedServiceWrappers){
+            if(sortedWrappers.containsKey(svc.getIncident().getAuditDetails().getCreatedTime())){
+                sortedWrappers.get(svc.getIncident().getAuditDetails().getCreatedTime()).add(svc);
             }else{
-                List<ServiceWrapper> serviceWrapperList = new ArrayList<>();
+                List<IncidentWrapper> serviceWrapperList = new ArrayList<>();
                 serviceWrapperList.add(svc);
-                sortedWrappers.put(svc.getService().getAuditDetails().getCreatedTime(), serviceWrapperList);
+                sortedWrappers.put(svc.getIncident().getAuditDetails().getCreatedTime(), serviceWrapperList);
             }
         }
-        List<ServiceWrapper> sortedServiceWrappers = new ArrayList<>();
+        List<IncidentWrapper> sortedIncidentWrappers = new ArrayList<>();
         for(Long createdTimeDesc : sortedWrappers.keySet()){
-            sortedServiceWrappers.addAll(sortedWrappers.get(createdTimeDesc));
+        	sortedIncidentWrappers.addAll(sortedWrappers.get(createdTimeDesc));
         }
-        return sortedServiceWrappers;
+        return sortedIncidentWrappers;
     }
 
 

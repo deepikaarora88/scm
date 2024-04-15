@@ -8,6 +8,7 @@ import _, { findIndex } from "lodash";
 const EmployeeSideBar = () => {
   const sidebarRef = useRef(null);
   const { isLoading, data } = Digit.Hooks.useAccessControl();
+  console.log("data", data)
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
   useEffect(() => {
@@ -41,15 +42,16 @@ const EmployeeSideBar = () => {
   const configEmployeeSideBar = {};
 
   //creating the object structure from mdms value for easy iteration
-  let configEmployeeSideBar1 = {};
-  data?.actions?.filter((e) => e.url === "url")?.forEach((item) => {
+let configEmployeeSideBar1 = {};
+  data?.actions?.filter((e) => e.url === "url" && e.serviceCode==="PGR")?.forEach((item) => {
     _.set(configEmployeeSideBar1,item.path,{...item}) 
   })
 
   data?.actions
-    .filter((e) => e.url === "url")
+    .filter((e) => e.url === "url"&& e.serviceCode==="PGR")
     .forEach((item) => {
       let index = item.path.split(".")[0];
+      console.log("index", index)
       if (search == "" && item.path !== "") {
          index = item.path.split(".")[0];
         if (index === "TradeLicense") index = "Trade License";
@@ -153,7 +155,129 @@ const EmployeeSideBar = () => {
   if (!res) {
     return "";
   }
+  // configEmployeeSideBar = {
+  //   Complaints:[
+  //     {
+  //       createdBy: null,
+  //       createdDate: null,
+  //       displayName: "Open Complaints",
+  //       enabled: true,
+  //       id: 1557,
+  //       lastModifiedBy: null,
+  //       lastModifiedDate: null,
+  //       leftIcon: "action:announcement",
+  //       name: "OpenComplaints",
+  //       navigationURL: "/digit-ui/employee/pgr/inbox",
+  //       orderNumber: 1,
+  //       parentModule: "rainmaker-pgr",
+  //       path: "Complaints.MyComplaints",
+  //       queryParams: "",
+  //       rightIcon: "",
+  //       serviceCode: "PGR",
+  //       tenantId: "pg",
+  //       url: "url"
+        
+  //     },
+  //     {
+  //       createdBy: null,
+  //     createdDate: null,
+  //     displayName: "Open Complaints",
+  //     enabled: true,
+  //     id: 1557,
+  //     lastModifiedBy: null,
+  //     lastModifiedDate: null,
+  //     leftIcon: "action:announcement",
+  //     name: "OpenComplaints",
+  //     navigationURL: "/digit-ui/employee/pgr/inbox",
+  //     orderNumber: 1,
+  //     parentModule: "rainmaker-pgr",
+  //     path: "Complaints.MyComplaints",
+  //     queryParams: "",
+  //     rightIcon: "",
+  //     serviceCode: "PGR",
+  //     tenantId: "pg",
+  //     url: "url"
+  //     }
+  //   ]
+     
+     
 
+  //  };
+
+  // //creating the object structure from mdms value for easy iteration
+  //  configEmployeeSideBar1 = {
+  //   Complaints:[
+  //     Closed Complaints:[
+          // {
+  //       createdBy: null,
+  //       createdDate: null,
+  //       displayName: "Closed Complaints",
+  //       enabled: true,
+  //       id: 1557,
+  //       lastModifiedBy: null,
+  //       lastModifiedDate: null,
+  //       leftIcon: "custom:closed-complaints",
+  //       name: "ClosedComplaints",
+  //       navigationURL: "closed-complaints",
+  //       orderNumber: 1,
+  //       parentModule: "rainmaker-pgr",
+  //       path: "Complaints.Closed Complaints",
+  //       queryParams: "",
+  //       rightIcon: "",
+  //       serviceCode: "PGR",
+  //       tenantId: "pg",
+  //       url: "url"
+        
+  //     },
+//]
+//   Create Complaint:[
+  //     {
+  //       createdBy: null,
+  //     createdDate: null,
+  //     displayName: "Open Complaints",
+  //     enabled: true,
+  //     id: 1557,
+  //     lastModifiedBy: null,
+  //     lastModifiedDate: null,
+  //     leftIcon: "action:announcement",
+  //     name: "OpenComplaints",
+  //     navigationURL: "/digit-ui/employee/pgr/inbox",
+  //     orderNumber: 1,
+  //     parentModule: "rainmaker-pgr",
+  //     path: "Complaints.MyComplaints",
+  //     queryParams: "",
+  //     rightIcon: "",
+  //     serviceCode: "PGR",
+  //     tenantId: "pg",
+  //     url: "url"
+  //     }
+//  ]
+//My Complaint:[
+  //     {
+  //       createdBy: null,
+  //     createdDate: null,
+  //     displayName: "Open Complaints",
+  //     enabled: true,
+  //     id: 1557,
+  //     lastModifiedBy: null,
+  //     lastModifiedDate: null,
+  //     leftIcon: "action:announcement",
+  //     name: "OpenComplaints",
+  //     navigationURL: "/digit-ui/employee/pgr/inbox",
+  //     orderNumber: 1,
+  //     parentModule: "rainmaker-pgr",
+  //     path: "Complaints.MyComplaints",
+  //     queryParams: "",
+  //     rightIcon: "",
+  //     serviceCode: "PGR",
+  //     tenantId: "pg",
+  //     url: "url"
+  //     }
+//  ]
+  //   ]
+  // };
+  
+  console.log("configemp", configEmployeeSideBar, configEmployeeSideBar1)
   const renderSearch = () => {
     return (
       <div className="submenu-container">

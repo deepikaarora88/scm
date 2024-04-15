@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 const BillsCard = () => {
   const { t } = useTranslation();
   const userRoles = Digit.SessionStorage.get("User")?.info?.roles;
-  const isEmployee = userRoles.find((role) => role.code === "SUPERUSER");
+  const isEmployee = userRoles.find((role) => role.code === "1USER");
   if (!isEmployee) return null;
   const propsForModuleCard = {
     Icon: <CollectionIcon />,

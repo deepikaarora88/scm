@@ -37,11 +37,11 @@ public class UserService {
      * Calls user service to enrich user from search or upsert user
      * @param request
      */
-    public void callUserService(ServiceRequest request){
+    public void callUserService(IncidentRequest request){
 
-        if(!StringUtils.isEmpty(request.getService().getAccountId()))
+        if(!StringUtils.isEmpty(request.getIncident().getAccountId()))
             enrichUser(request);
-        else if(request.getService().getCitizen()!=null)
+        else if(request.getIncident().getReporter()!=null)
             upsertUser(request);
 
     }
@@ -50,18 +50,18 @@ public class UserService {
      * Calls user search to fetch the list of user and enriches it in serviceWrappers
      * @param serviceWrappers
      */
-    public void enrichUsers(List<ServiceWrapper> serviceWrappers){
+    public void enrichUsers(List<IncidentWrapper> incidentWrappers){
 
         Set<String> uuids = new HashSet<>();
 
-        serviceWrappers.forEach(serviceWrapper -> {
-            uuids.add(serviceWrapper.getService().getAccountId());
+        incidentWrappers.forEach(incidentWrapper -> {
+            uuids.add(incidentWrapper.getIncident().getAccountId());
         });
 
         Map<String, User> idToUserMap = searchBulkUser(new LinkedList<>(uuids));
 
-        serviceWrappers.forEach(serviceWrapper -> {
-            serviceWrapper.getService().setCitizen(idToUserMap.get(serviceWrapper.getService().getAccountId()));
+        incidentWrappers.forEach(incidentWrapper -> {
+        	incidentWrapper.getIncident().setReporter(idToUserMap.get(incidentWrapper.getIncident().getAccountId()));
         });
 
     }
@@ -72,10 +72,10 @@ public class UserService {
      * If the there is already a user with that mobileNumber, the existing user is updated
      * @param request
      */
-    private void upsertUser(ServiceRequest request){
+    private void upsertUser(IncidentRequest request){
 
-        User user = request.getService().getCitizen();
-        String tenantId = request.getService().getTenantId();
+        User user = request.getIncident().getReporter();
+        String tenantId = request.getIncident().getTenantId();
         User userServiceResponse = null;
 
         // Search on mobile number as user name
@@ -92,7 +92,7 @@ public class UserService {
         }
 
         // Enrich the accountId
-        request.getService().setAccountId(userServiceResponse.getUuid());
+        request.getIncident().setAccountId(userServiceResponse.getUuid());
     }
 
 
@@ -100,18 +100,18 @@ public class UserService {
      * Calls user search to fetch a user and enriches it in request
      * @param request
      */
-    private void enrichUser(ServiceRequest request){
+    private void enrichUser(IncidentRequest request){
 
         RequestInfo requestInfo = request.getRequestInfo();
-        String accountId = request.getService().getAccountId();
-        String tenantId = request.getService().getTenantId();
+        String accountId = request.getIncident().getAccountId();
+        String tenantId = request.getIncident().getTenantId();
 
         UserDetailResponse userDetailResponse = searchUser(userUtils.getStateLevelTenant(tenantId),accountId,null);
 
         if(userDetailResponse.getUser().isEmpty())
             throw new CustomException("INVALID_ACCOUNTID","No user exist for the given accountId");
 
-        else request.getService().setCitizen(userDetailResponse.getUser().get(0));
+        else request.getIncident().setReporter(userDetailResponse.getUser().get(0));
 
     }
 

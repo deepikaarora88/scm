@@ -69,6 +69,7 @@ export const Request = async ({
   reqTimestamp = false,
   plainAccessRequest = null
 }) => {
+  console.log("ur1", url)
   if (method.toUpperCase() === "POST") {
     const ts = new Date().getTime();
     data.RequestInfo = {
@@ -89,7 +90,7 @@ export const Request = async ({
     if (reqTimestamp) {
       data.RequestInfo = { ...data.RequestInfo, ts: Number(ts) };
     }
-
+console.log("url23", url)
     /* 
     Feature :: Privacy
     
@@ -97,7 +98,7 @@ export const Request = async ({
     */
     const privacy = Digit.Utils.getPrivacyObject();
     if (privacy && !url.includes("/edcr/rest/dcr/") && !noRequestInfo) {
-      data.RequestInfo = { ...data.RequestInfo, plainAccessRequest: { ...privacy } };
+    data.RequestInfo = { ...data.RequestInfo, plainAccessRequest: { ...privacy } };
     }
 
     if(plainAccessRequest){

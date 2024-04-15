@@ -89,10 +89,10 @@ public class IMQueryBuilder {
             addToPreparedStatement(preparedStmtList, applicationStatuses);
         }
 
-        if (criteria.getServiceRequestId() != null) {
+        if (criteria.getIncidentId() != null) {
             addClauseIfRequired(preparedStmtList, builder);
-            builder.append(" ser.serviceRequestId=? ");
-            preparedStmtList.add(criteria.getServiceRequestId());
+            builder.append(" ser.incidentid=? ");
+            preparedStmtList.add(criteria.getIncidentId());
         }
 
         Set<String> ids = criteria.getIds();
@@ -178,8 +178,8 @@ public class IMQueryBuilder {
         else if(criteria.getSortBy()== RequestSearchCriteria.SortBy.applicationStatus)
             builder.append(" ORDER BY ser.applicationStatus ");
 
-        else if(criteria.getSortBy()== RequestSearchCriteria.SortBy.serviceRequestId)
-            builder.append(" ORDER BY ser.serviceRequestId ");
+        else if(criteria.getSortBy()== RequestSearchCriteria.SortBy.incidentId)
+            builder.append(" ORDER BY ser.incidentid ");
 
         if(criteria.getSortOrder()== RequestSearchCriteria.SortOrder.ASC)
             builder.append(" ASC ");
